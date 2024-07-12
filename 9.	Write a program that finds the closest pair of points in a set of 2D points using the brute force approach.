@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+struct Point {
+    int x, y;
+};
+
+double dist(struct Point p1, struct Point p2) {
+    return sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y));
+}
+
+void closestPairOfPoints(struct Point points[], int n) {
+    double min_dist = __DBL_MAX__;
+    int point1, point2;
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            double distance = dist(points[i], points[j]);
+            if (distance < min_dist) {
+                min_dist = distance;
+                point1 = i;
+                point2 = j;
+            }
+        }
+    }
+
+    printf("Closest pair of points: (%d, %d) and (%d, %d)\n", points[point1].x, points[point1].y, points[point2].x, points[point2].y);
+}
+
+int main() {
+    struct Point points[] = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}};
+    int n = sizeof(points) / sizeof(points[0]);
+    closestPairOfPoints(points, n);
+    return 0;
+}
