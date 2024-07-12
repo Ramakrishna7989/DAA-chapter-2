@@ -1,0 +1,19 @@
+int findKthPositive(int* arr, int arrSize, int k) {
+    int missingCount = 0;
+    int num = 1;
+    int i = 0;
+    
+    while (missingCount < k) {
+        if (i < arrSize && arr[i] == num) {
+            i++;
+        } else {
+            missingCount++;
+        }
+        if (missingCount == k) {
+            return num;
+        }
+        num++;
+    }
+    
+    return -1; // If k exceeds the missing positive integers in the array
+}
