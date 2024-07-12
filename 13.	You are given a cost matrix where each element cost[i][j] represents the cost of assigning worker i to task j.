@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int factorial(int n) {
+    if (n == 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void generate_permutations(int *workers, int size, int n, int **permutations, int *count) {
+    if (size == 1) {
+        for (int i = 0; i < n; i++) {
+            permutations[*count][i] = workers[i];
+        }
+        (*count)++;
+    } else {
+        for (int i = 0; i < size; i++) {
+            generate_permutations(workers, size - 1, n, permutations, count);
+            if (size % 2 == 1) {
+                swap(&workers[0], &workers[size - 1]);
+            } else {
+                swap(&workers[i], &workers[size - 1]);
+            }
+        }
+    }
+}
+
+void assignment_problem(int **cost_matrix, int num_workers, int num_tasks) {
+    int *workers = (int *)malloc(num_workers * sizeof(int));
+    for (int i = 0; i < num_workers; i++) {
+        workers[i] = i;
+    }
+
+    int num_permutations = factorial(num_workers);
+    int **permutations = (int **)malloc(num_permutations * sizeof(int *));
+    for (int i = 0; i < num_permutations; i++) {
+        permutations[i] = (int *)malloc(num_workers * sizeof(int));
+    }
+
+    int count = 0;
+    generate_permutations(workers, num_workers, num_workers, permutations, &count);
+
+    // Output all permutations (worker indices)
+    for (int i = 0; i < num_permutations; i++) {
+        printf("Permutation %d: ", i + 1);
+        for (int j = 0; j < num_workers; j++) {
+            printf("%d ", permutations[i][j]);
+        }
+        printf("\n");
+    }
+
+    // Free memory
+    free(workers);
+    for (int i = 0; i < num_permutations; i++) {
+        free(permutations[i]);
+    }
+    free(permutations);
+}
+
+int main() {
+    int cost_matrix[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    assignment_problem((int **)cost_matrix, 3, 3);
+
+    return 0;
+}
