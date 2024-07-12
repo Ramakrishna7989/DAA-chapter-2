@@ -1,0 +1,50 @@
+#include <stdio.h>
+
+#define N 4
+#define INF 999999
+
+int graph[N][N] = {
+    {0, 10, 15, 20},
+    {10, 0, 35, 25},
+    {15, 35, 0, 30},
+    {20, 25, 30, 0}
+};
+
+int visited[N];
+int minPath[N];
+int minCost = INF;
+
+void tsp(int currentCity, int count, int cost) {
+    int i;
+    visited[currentCity] = 1;
+
+    if (count == N - 1) {
+        if (graph[currentCity][0] + cost < minCost) {
+            minCost = graph[currentCity][0] + cost;
+            for (i = 0; i < N; i++) {
+                minPath[i] = visited[i];
+            }
+        }
+    }
+
+    for (i = 0; i < N; i++) {
+        if (!visited[i] && graph[currentCity][i] != 0) {
+            tsp(i, count + 1, cost + graph[currentCity][i]);
+        }
+    }
+
+    visited[currentCity] = 0;
+}
+
+int main() {
+    tsp(0, 0, 0);
+
+    printf("Minimum Cost: %d\n", minCost);
+    printf("Path: ");
+    for (int i = 0; i < N; i++) {
+        printf("%d ", minPath[i]);
+    }
+    printf("0\n");
+
+    return 0;
+}
