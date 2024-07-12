@@ -1,0 +1,87 @@
+// Code to Generate Shortest Path in a City Network
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define INFINITY 9999
+#define MAX_CITIES 10
+
+int graph[MAX_CITIES][MAX_CITIES];
+
+void dijkstra(int numCities, int startCity);
+
+int main() {
+    int numCities = 5;
+    int startCity = 0;
+
+    // Initialize the city network graph
+    int cityNetwork[MAX_CITIES][MAX_CITIES] = {
+        {0, 2, 4, 1, 0},
+        {2, 0, 0, 3, 0},
+        {4, 0, 0, 0, 1},
+        {1, 3, 0, 0, 3},
+        {0, 0, 1, 3, 0}
+    };
+
+    // Copy the city network to the graph
+    memcpy(graph, cityNetwork, sizeof(cityNetwork));
+
+    dijkstra(numCities, startCity);
+
+    return 0;
+}
+
+void dijkstra(int numCities, int startCity) {
+    int distance[MAX_CITIES], visited[MAX_CITIES], pred[MAX_CITIES];
+    int count, mindistance, nextCity, i, j;
+
+    // Initialize the distance, visited, and predecessor arrays
+    for (i = 0; i < numCities; i++) {
+        distance[i] = graph[startCity][i];
+        pred[i] = startCity;
+        visited[i] = 0;
+    }
+
+    distance[startCity] = 0;
+    visited[startCity] = 1;
+    count = 1;
+
+    while (count < numCities - 1) {
+        mindistance = INFINITY;
+
+        // Next city gives the node at minimum distance
+        for (i = 0; i < numCities; i++) {
+            if (distance[i] < mindistance && !visited[i]) {
+                mindistance = distance[i];
+                nextCity = i;
+            }
+        }
+
+        visited[nextCity] = 1;
+        // Update the distance array
+        for (i = 0; i < numCities; i++) {
+            if (!visited[i]) {
+                if (mindistance + graph[nextCity][i] < distance[i]) {
+                    distance[i] = mindistance + graph[nextCity][i];
+                    pred[i] = nextCity;
+                }
+            }
+        }
+        count++;
+    }
+
+    // Output the shortest distance and path for each city
+    for (i = 0; i < numCities; i++) {
+        if (i != startCity) {
+            printf("\nDistance from city %d to city %d: %d", startCity, i, distance[i]);
+            printf("\nPath: %d", i);
+
+            j = i;
+            do {
+                j = pred[j];
+                printf(" <- %d", j);
+            } while (j != startCity);
+        }
+    }
+}
