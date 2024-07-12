@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <string.h>
+
+int isSubstring(char *str1, char *str2) {
+    if (strstr(str1, str2) != NULL) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+void findSubstrings(char **words, int wordsSize) {
+    for (int i = 0; i < wordsSize; i++) {
+        for (int j = 0; j < wordsSize; j++) {
+            if (i != j && isSubstring(words[i], words[j])) {
+                printf("%s is a substring of %s\n", words[i], words[j]);
+            }
+        }
+    }
+}
+
+int main() {
+    char *words[] = {"code", "coder", "coding", "decode", "computer"};
+    int size = sizeof(words) / sizeof(words[0]);
+    
+    findSubstrings(words, size);
+    
+    return 0;
+}
