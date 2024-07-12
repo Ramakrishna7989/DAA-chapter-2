@@ -1,0 +1,45 @@
+#include <stdio.h>
+
+struct Point {
+    int x, y;
+};
+
+int orientation(struct Point a, struct Point b, struct Point c) {
+    int val = (b.y - a.y) * (c.x - b.x) - (b.x - a.x) * (c.y - b.y);
+    if (val == 0) return 0;
+    return (val > 0) ? 1 : 2;
+}
+
+void convexHull(struct Point points[], int n) {
+    if (n < 3) return;
+
+    int hull[n];
+    int hullSize = 0;
+
+    for (int i = 0; i < n; i++) {
+        hull[i] = -1;
+    }
+
+    int p = 0, q;
+    do {
+        hull[hullSize++] = p;
+        q = (p + 1) % n;
+        for (int i = 0; i < n; i++) {
+            if (orientation(points[p], points[i], points[q]) == 2) {
+                q = i;
+            }
+        }
+        p = q;
+    } while (p != 0);
+
+    for (int i = 0; i < hullSize; i++) {
+        printf("(%d, %d)\n", points[hull[i]].x, points[hull[i]].y);
+    }
+}
+
+int main() {
+    struct Point points[] = {{0, 3}, {2, 2}, {1, 1}, {2, 1}, {3, 0}, {0, 0}, {3, 3}};
+    int n = sizeof(points) / sizeof(points[0]);
+    convexHull(points, n);
+    return 0;
+}
